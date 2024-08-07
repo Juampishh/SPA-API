@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import IndexRoutes from "./routes/index.routes";
 import UserRoutes from "./routes/user.routes";
+import AuthRoutes from "./routes/auth.routes";
 
 export class App {
   private app: Application;
@@ -17,11 +18,11 @@ export class App {
   middlewares() {
     this.app.use(morgan("dev"));
     this.app.use(express.json());
-    this.app.use(express.json({ limit: "50mb" }));
   }
   routes() {
     this.app.use(IndexRoutes);
     this.app.use("/users", UserRoutes);
+    this.app.use("/auth", AuthRoutes);
   }
   async listen() {
     await this.app.listen(this.app.get("port"));

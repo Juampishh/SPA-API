@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../interfaces/User";
 import { getConnection } from "../database";
+
 export async function getUsers(req: Request, res: Response): Promise<Response> {
   const conn = await getConnection();
   const users = await conn.query("SELECT * FROM users");

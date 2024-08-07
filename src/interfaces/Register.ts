@@ -1,10 +1,9 @@
-export interface User {
-  id?: number;
-  type: "admin" | "client";
+export interface Register {
+  type: string;
   username: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  created_at: Date;
+  createdAt?: Date;
 }
