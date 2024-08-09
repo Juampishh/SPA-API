@@ -3,7 +3,7 @@ import morgan from "morgan";
 import IndexRoutes from "./routes/index.routes";
 import UserRoutes from "./routes/user.routes";
 import AuthRoutes from "./routes/auth.routes";
-
+var cors = require('cors')
 export class App {
   private app: Application;
   constructor(private port?: number | string) {
@@ -20,6 +20,7 @@ export class App {
     this.app.use(express.json());
   }
   routes() {
+    this.app.use(cors())
     this.app.use(IndexRoutes);
     this.app.use("/users", UserRoutes);
     this.app.use("/auth", AuthRoutes);

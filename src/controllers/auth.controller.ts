@@ -1,33 +1,28 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { getConnection } from "../database";
 import { Login } from "../interfaces/Login";
 import { Register } from "../interfaces/Register";
+import { handleApiResponse } from "../helpers/HandleApiResponse"; // Asegúrate de ajustar la ruta según la ubicación real del archivo
 
 export async function login(req: Request, res: Response): Promise<Response> {
-  const data: Login = req.body;
-  const conn = await getConnection();
-  const [row]: any = await conn.query(
-    "SELECT * FROM users WHERE username = ? AND password = ?",
-    [data.username, data.password]
-  );
-  if (row.length === 0) {
-    return res.status(400).json({
-      message: "Usuario o contraseña incorrectos",
-      code: 400,
-    });
-  }
+  try {
+    const data: Login = req.body;
+    const conn = await getConnection();
+    const [row]: any = await conn.query(
+      "SELECT * FROM users WHERE username = ? AND password = ?",
+      [data.username, data.password]
+    );
+    if (row.length === 0) {
+      return handleApiResponse(res, 400, "Usuario o contraseña incorrectos");
+    }
 
-  return res.json({
-    message: "Usuario encontrado",
-    data: row[0],
-  });
+    return handleApiResponse(res, 200, "Usuario encontrado", row[0]);
+  } catch (err) {
+    return handleApiResponse(res, 500, "Error al buscar usuario");
+  }
 }
 
-export async function register(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<Response> {
+export async function register(req: Request, res: Response): Promise<Response> {
   const data: Register = req.body;
   if (data.type === undefined) {
     data.type = "client";
@@ -38,26 +33,17 @@ export async function register(
     // Verifica si el usuario ya existe
     const [rows]: any[] = await conn.query(
       "SELECT * FROM users WHERE username = ? OR email = ?",
-      [data.username, [data.email]]
+      [data.username, data.email]
     );
 
     if (rows.length > 0) {
-      return res.status(400).json({
-        message: "Usuario ya existe",
-        code: 400,
-      });
+      return handleApiResponse(res, 400, "El usuario ya existe");
     }
 
     // Inserta el nuevo usuario
     await conn.query("INSERT INTO users SET ?", [data]);
-    return res.status(201).json({
-      message: "Usuario creado",
-      code: 201,
-    });
+    return handleApiResponse(res, 201, "Usuario creado");
   } catch (err) {
-    return res.status(500).json({
-      message: "Error al crear usuario",
-      code: 500,
-    });
+    return handleApiResponse(res, 500, "Error al crear usuario");
   }
 }
