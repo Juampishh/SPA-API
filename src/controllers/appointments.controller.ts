@@ -35,3 +35,39 @@ export const getAppointmentByUser = async (
     return handleApiResponse(res, 500, "Error al obtener citas");
   }
 };
+export const getAllAppointments = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const conn = await getConnection();
+    const user_id = req.params.id as string;
+    if (!user_id) return handleApiResponse(res, 400, "Falta el id del usuario");
+
+    // Verifica la existencia del usuario
+    const [user]: any = await conn.query("SELECT * FROM users WHERE id = ?", [
+      user_id,
+    ]);
+    if (user.length === 0) {
+      return handleApiResponse(res, 404, "El usuario no existe");
+    }
+
+    // Consulta optimizada con JOIN
+    const query = `
+      SELECT a.*, s.*
+      FROM appointments a
+      LEFT JOIN spa_services s ON a.service_id = s.id
+    `;
+    const [rows]: any = await conn.query(query);
+
+    // Formatea los datos para incluir el servicio en cada cita
+    const appointments = rows.map((row: any) => ({
+      ...row,
+    }));
+
+    return handleApiResponse(res, 200, "Lista de citas", appointments);
+  } catch (err) {
+    console.error(err);
+    return handleApiResponse(res, 500, "Error al obtener citas");
+  }
+};

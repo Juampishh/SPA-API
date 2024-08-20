@@ -6,6 +6,7 @@ import AuthRoutes from "./routes/auth.routes";
 import ServicesRoutes from "./routes/services.routes";
 import AppointmentsRoutes from "./routes/appointments.routes";
 var cors = require("cors");
+require("dotenv").config();
 export class App {
   private app: Application;
   constructor(private port?: number | string) {
@@ -15,7 +16,7 @@ export class App {
     this.routes();
   }
   settings() {
-    this.app.set("port", this.port || process.env.PORT || 3000);
+    this.app.set("port", this.port || process.env.PORT);
   }
   middlewares() {
     this.app.use(morgan("dev"));
