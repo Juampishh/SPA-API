@@ -8,7 +8,6 @@ async function connect() {
       user: process.env.DB_USER || "root",
       database: process.env.DB_NAME || "data_base_spa",
       password: process.env.DB_PASS || "",
-      connectionLimit: 10,
     });
 
     return connection;
