@@ -5,6 +5,7 @@ import UserRoutes from "./routes/user.routes";
 import AuthRoutes from "./routes/auth.routes";
 import ServicesRoutes from "./routes/services.routes";
 import AppointmentsRoutes from "./routes/appointments.routes";
+import OpinionsRoutes from "./routes/opinions.routes";
 var cors = require("cors");
 require("dotenv").config();
 export class App {
@@ -29,6 +30,7 @@ export class App {
     this.app.use("/auth", AuthRoutes);
     this.app.use("/services", ServicesRoutes);
     this.app.use("/appointments", AppointmentsRoutes);
+    this.app.use("/opinions", OpinionsRoutes);
   }
   async listen() {
     await this.app.listen(this.app.get("port"));
