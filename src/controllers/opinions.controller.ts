@@ -21,6 +21,7 @@ export async function getSpaReviews(
       reviews.length > 0 ? reviews : undefined
     );
   } catch (err) {
+    console.log(err);
     return handleApiResponse(res, 500, "Error al buscar reseñas");
   }
 }

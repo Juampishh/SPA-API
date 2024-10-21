@@ -29,6 +29,8 @@ export async function createUser(
 ): Promise<Response<ApiResponse>> {
   try {
     const newUser: User = req.body;
+    console.log(newUser);
+
     const conn = await getConnection();
     const [user]: any = await conn.query(
       "SELECT * FROM users WHERE username = ? OR email = ?",
@@ -40,6 +42,8 @@ export async function createUser(
     await conn.query("INSERT INTO users SET ?", [newUser]);
     return handleApiResponse(res, 201, "Usuario Creado", newUser);
   } catch (err) {
+    console.log(err);
+
     return handleApiResponse(res, 500, "Error al crear usuario");
   }
 }
@@ -106,5 +110,26 @@ export async function deleteUser(
     return handleApiResponse(res, 200, "Usuario Eliminado");
   } catch (err) {
     return handleApiResponse(res, 500, "Error al eliminar usuario");
+  }
+}
+
+// Obtener todos los usuarios de tipo "client"
+export async function getClientUsers(
+  req: Request,
+  res: Response
+): Promise<Response<ApiResponse>> {
+  try {
+    const conn = await getConnection();
+    const [clients]: any = await conn.query(
+      "SELECT * FROM users WHERE type = 'client'"
+    );
+    return handleApiResponse(
+      res,
+      clients.length > 0 ? 200 : 204,
+      clients.length > 0 ? "Clientes encontrados" : "No hay clientes",
+      clients.length > 0 ? clients : undefined
+    );
+  } catch (err) {
+    return handleApiResponse(res, 500, "Error al buscar clientes");
   }
 }
