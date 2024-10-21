@@ -171,9 +171,6 @@ export const createAppointment = async (
       });
     });
 
-    // Add company logo
-    doc.image("public/img/Logo-removebg-preview.png", 50, 45, { width: 100 }); // Adjust the path and size as needed
-
     // Add content to the PDF
     doc.fontSize(20).text("Spa Sentirse Bien", { align: "center" });
     doc
@@ -218,7 +215,7 @@ export const createAppointment = async (
   } catch (err) {
     console.error(err);
     console.log(err);
-    return handleApiResponse(res, 500, "Error al crear cita", err);
+    return handleApiResponse(res, 500, "Error al crear cita");
   }
 };
 
