@@ -217,6 +217,7 @@ export const createAppointment = async (
     return handleApiResponse(res, 201, "Cita creada");
   } catch (err) {
     console.error(err);
+    console.log(err);
     return handleApiResponse(res, 500, "Error al crear cita");
   }
 };
