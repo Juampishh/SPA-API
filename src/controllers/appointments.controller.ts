@@ -152,11 +152,7 @@ export const createAppointment = async (
         from: "zepcion@gmail.com",
         to: user[0].email,
         subject: "Confirmación de Cita",
-        text: `Hola ${user[0].firstName} ${
-          user[0].lastName
-        }, tu cita para el servicio ${
-          service[0].service_name
-        } ha sido creada para el ${formatedDate(appointment_date)}.`,
+        text: `Hola ${user[0].firstName} ${user[0].lastName},Adjunto a este correo encontrarás tu factura de la cita para el servicio.`,
         attachments: [
           {
             filename: "invoice.pdf",
