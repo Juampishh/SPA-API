@@ -189,8 +189,6 @@ export const createAppointment = async (
       });
     });
 
-    addPDFHeader(doc);
-
     doc.fontSize(20).text("Spa Sentirse Bien", { align: "center" });
     doc
       .fontSize(10)
