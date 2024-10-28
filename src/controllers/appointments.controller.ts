@@ -45,7 +45,6 @@ export const getAppointmentByUser = async (
     return handleApiResponse(res, 500, "Error al obtener citas");
   }
 };
-
 export const getAllAppointments = async (
   req: Request,
   res: Response
@@ -72,7 +71,7 @@ export const getAllAppointments = async (
     );
 
     let query = `
-      SELECT a.*, s.*, u.*
+      SELECT a.id AS appointmentId, a.*, s.*, u.*
       FROM appointments a
       LEFT JOIN spa_services s ON a.service_id = s.id
       LEFT JOIN users u ON a.user_id = u.id
@@ -90,6 +89,7 @@ export const getAllAppointments = async (
     const [rows]: any = await conn.query(query, [today]);
 
     const appointments = rows.map((row: any) => ({
+      appointmentId: row.appointmentId, // Use the alias for appointmentId
       ...row,
     }));
 
@@ -99,7 +99,6 @@ export const getAllAppointments = async (
     return handleApiResponse(res, 500, "Error al obtener citas");
   }
 };
-
 const paymentMethod = (payment_method: string) => {
   if (payment_method === "tarjetaCredito") {
     return "Tarjeta de Crédito";
@@ -538,5 +537,37 @@ export const getIncomeReport = async (
   } catch (err) {
     console.error(err);
     res.status(500).send("Error al generar el informe de ingresos");
+  }
+};
+export const completeAppointment = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const conn = await getConnection();
+    const appointment_id = req.params.id as string;
+
+    if (!appointment_id) {
+      return handleApiResponse(res, 400, "Falta el id de la cita");
+    }
+
+    const [appointment]: any = await conn.query(
+      "SELECT * FROM appointments WHERE id = ?",
+      [appointment_id]
+    );
+
+    if (appointment.length === 0) {
+      return handleApiResponse(res, 404, "La cita no existe");
+    }
+
+    await conn.query(
+      "UPDATE appointments SET status = 'completed' WHERE id = ?",
+      [appointment_id]
+    );
+
+    return handleApiResponse(res, 200, "Cita completada exitosamente");
+  } catch (err) {
+    console.error(err);
+    return handleApiResponse(res, 500, "Error al completar la cita");
   }
 };
