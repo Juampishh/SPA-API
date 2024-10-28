@@ -334,6 +334,8 @@ WHERE a.appointment_date BETWEEN ? AND ?
       const formattedDate = new Date(row.appointment_date).toLocaleDateString(
         "es-AR",
         {
+          hour: "2-digit",
+          minute: "2-digit",
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -439,6 +441,8 @@ export const getWeeklyPendingAppointments = async (
       const formattedDate = new Date(row.appointment_date).toLocaleDateString(
         "es-AR",
         {
+          hour: "2-digit",
+          minute: "2-digit",
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
