@@ -3,6 +3,7 @@ import { getConnection } from "../database";
 import { handleApiResponse } from "../helpers/HandleApiResponse";
 import PDFDocument from "pdfkit";
 import nodemailer from "nodemailer";
+
 export const addPDFHeader = (doc: any) => {
   doc.fontSize(20).text("SPA Sentirse Bien", { align: "center" });
   doc
@@ -45,6 +46,7 @@ export const getAppointmentByUser = async (
     return handleApiResponse(res, 500, "Error al obtener citas");
   }
 };
+
 export const getAllAppointments = async (
   req: Request,
   res: Response
@@ -99,6 +101,7 @@ export const getAllAppointments = async (
     return handleApiResponse(res, 500, "Error al obtener citas");
   }
 };
+
 const paymentMethod = (payment_method: string) => {
   if (payment_method === "tarjetaCredito") {
     return "Tarjeta de Crédito";
@@ -314,9 +317,9 @@ WHERE a.appointment_date BETWEEN ? AND ?
     const addHeader = (y: number) => {
       doc.fontSize(10);
       doc.text("Fecha", 50, y);
-      doc.text("Servicio", 120, y);
+      doc.text("Servicio", 170, y); // Adjusted x-coordinate
       doc.text("Precio", 320, y);
-      doc.text("Profesional", 400, y);
+      doc.text("Profesional", 390, y);
       return y + 20;
     };
 
@@ -341,12 +344,12 @@ WHERE a.appointment_date BETWEEN ? AND ?
           year: "numeric",
         }
       );
-      doc.text(formattedDate, 50, y, { width: 60, ellipsis: true });
-      doc.text(row.service_name, 120, y, { width: 180, ellipsis: true });
+      doc.text(formattedDate, 50, y, { width: 120, ellipsis: true }); // Adjust width to 120
+      doc.text(row.service_name, 170, y, { width: 150, ellipsis: true }); // Adjust width to 150
       doc.text(`$${row.cost}`, 320, y, { width: 60, ellipsis: true });
 
       const professionalName = `${row.professional_firstName} ${row.professional_lastName}`;
-      doc.text(professionalName, 400, y, { width: 150, ellipsis: true });
+      doc.text(professionalName, 390, y, { width: 150, ellipsis: true });
 
       const cost = parseFloat(row.cost);
       if (!isNaN(cost)) {
@@ -430,7 +433,7 @@ export const getWeeklyPendingAppointments = async (
     const addHeader = (y: number) => {
       doc.fontSize(10);
       doc.text("Fecha", 50, y);
-      doc.text("Servicio", 120, y);
+      doc.text("Servicio", 170, y); // Adjusted x-coordinate
       doc.text("Cliente", 320, y);
       return y + 20;
     };
@@ -448,8 +451,8 @@ export const getWeeklyPendingAppointments = async (
           year: "numeric",
         }
       );
-      doc.text(formattedDate, 50, y, { width: 60, ellipsis: true });
-      doc.text(row.service_name, 120, y, { width: 180, ellipsis: true });
+      doc.text(formattedDate, 50, y, { width: 120, ellipsis: true }); // Adjust width to 120
+      doc.text(row.service_name, 170, y, { width: 150, ellipsis: true }); // Adjust width to 150
       const clientName = `${row.user_firstName} ${row.user_lastName}`;
       doc.text(clientName, 320, y, { width: 150, ellipsis: true });
 
@@ -523,7 +526,7 @@ export const getIncomeReport = async (
 
     rows.forEach((row: any) => {
       const formattedDate = new Date(row.appointment_date).toLocaleDateString();
-      doc.text(formattedDate, 50, y, { width: 60, ellipsis: true });
+      doc.text(formattedDate, 50, y, { width: 120, ellipsis: true }); // Adjust width to 120
       doc.text(row.category, 120, y, { width: 140, ellipsis: true });
       doc.text(row.service_name, 270, y, { width: 140, ellipsis: true });
       doc.text(row.payment_method, 420, y, { width: 80, ellipsis: true });
@@ -543,6 +546,7 @@ export const getIncomeReport = async (
     res.status(500).send("Error al generar el informe de ingresos");
   }
 };
+
 export const completeAppointment = async (
   req: Request,
   res: Response
